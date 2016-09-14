@@ -19,8 +19,9 @@ defmodule PhoenixChat.Router do
     get "/", PageController, :index
   end
 
-  # Other scopes may use custom stacks.
-  # scope "/api", PhoenixChat do
-  #   pipe_through :api
-  # end
+  scope "/api", PhoenixChat do
+    pipe_through :api
+
+    resources "/users", UserController, except: [:show, :index, :new, :edit]
+  end
 end
