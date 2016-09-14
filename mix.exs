@@ -27,7 +27,9 @@ defmodule PhoenixChat.Mixfile do
         :phoenix_ecto,
         :phoenix_html,
         :phoenix_pubsub,
-        :postgrex
+        :postgrex,
+        :ueberauth,
+        :ueberauth_identity
       ]]
   end
 
