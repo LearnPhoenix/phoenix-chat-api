@@ -41,4 +41,11 @@ defmodule PhoenixChat.AuthController do
       {:error, "invalid password"}
     end
   end
+
+  defp signin_user(conn, user) do
+    token = conn
+            |> Guardian.Plug.api_sign_in(user)
+            |> Guardian.Plug.current_token
+    {:ok, user, token}
+  end
 end
