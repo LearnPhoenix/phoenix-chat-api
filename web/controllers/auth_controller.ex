@@ -4,6 +4,7 @@ defmodule PhoenixChat.AuthController do
   alias PhoenixChat.{ErrorView, UserView, User, AuthController}
 
   plug Ueberauth
+  plug Guardian.Plug.EnsureAuthenticated, [handler: AuthController] when action in [:delete, :me]
 
   def callback(%{assigns: %{ueberauth_auth: auth}} = conn, _params) do
     result = with {:ok, user} <- user_from_auth(auth),
