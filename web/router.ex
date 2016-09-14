@@ -33,6 +33,8 @@ defmodule PhoenixChat.Router do
   scope "/auth", PhoenixChat do
     pipe_through [:api, :api_auth]
 
+    get "/me", AuthController, :me
     post "/:identity/callback", AuthController, :callback
+    delete "/signout", AuthController, :delete
   end
 end
