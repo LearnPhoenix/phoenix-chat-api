@@ -44,14 +44,18 @@ defmodule PhoenixChat.Mixfile do
       {:corsica, "~> 0.4"},
       {:cowboy, "~> 1.0"},
       {:gettext, "~> 0.11"},
+      {:guardian, "~> 0.10"},
       {:phoenix, "~> 1.2.0"},
       {:phoenix_pubsub, "~> 1.0"},
       {:phoenix_ecto, "~> 3.0"},
       {:phoenix_html, "~> 2.6"},
       {:phoenix_live_reload, "~> 1.0", only: :dev},
-      {:postgrex, ">= 0.0.0"}
+      {:postgrex, ">= 0.0.0"},
+      {:ueberauth, "~> 0.2"},
+      {:ueberauth_identity, "~> 0.2"}
     ]
   end
+
 
   # Aliases are shortcuts or tasks specific to the current project.
   # For example, to create, migrate and run the seeds file at once:
