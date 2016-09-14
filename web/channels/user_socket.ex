@@ -3,6 +3,7 @@ defmodule PhoenixChat.UserSocket do
 
   ## Channels
   channel "room:*", PhoenixChat.RoomChannel
+  channel "admin:*", PhoenixChat.AdminChannel
 
   ## Transports
   transport :websocket, Phoenix.Transports.WebSocket
@@ -27,7 +28,7 @@ defmodule PhoenixChat.UserSocket do
       |> assign(:uuid, params["uuid"])
     {:ok, socket}
   end
-  
+
   # Socket id's are topics that allow you to identify all sockets for a given user:
   #
   #     def id(socket), do: "users_socket:#{socket.assigns.user_id}"
