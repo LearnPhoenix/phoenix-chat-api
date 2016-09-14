@@ -29,4 +29,16 @@ defmodule PhoenixChat.AuthController do
       user -> {:ok, user}
     end
   end
+
+  defp validate_pass(_encrypted, password) when password in [nil, ""] do
+    {:error, "password required"}
+  end
+
+  defp validate_pass(encrypted, password) do
+    if Comeonin.Bcrypt.checkpw(password, encrypted) do
+      :ok
+    else
+      {:error, "invalid password"}
+    end
+  end
 end
