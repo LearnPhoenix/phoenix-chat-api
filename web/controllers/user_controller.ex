@@ -8,16 +8,18 @@ defmodule PhoenixChat.UserController do
 
     case Repo.insert(changeset) do
       {:ok, user} ->
+        {:ok, token, _claims} = Guardian.encode_and_sign(user, :token)
+
         conn
         |> put_status(:created)
-        |> render("show.json", user: user)
+        |> render("show.json", user: user, token: token)
       {:error, changeset} ->
         conn
         |> put_status(:unprocessable_entity)
         |> render(PhoenixChat.ChangesetView, "error.json", changeset: changeset)
     end
   end
-  
+
   def update(conn, %{"id" => id, "user" => user_params}) do
     user = Repo.get!(User, id)
     changeset = User.changeset(user, user_params)
