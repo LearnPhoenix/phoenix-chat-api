@@ -21,4 +21,12 @@ defmodule PhoenixChat.AuthController do
         |> render(ErrorView, "error.json", error: reason)
     end
   end
+
+  defp user_from_auth(auth) do
+    result = Repo.get_by(User, email: auth.info.email)
+    case result do
+      nil -> {:error, %{"email" => ["invalid email"]}}
+      user -> {:ok, user}
+    end
+  end
 end
