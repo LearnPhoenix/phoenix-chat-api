@@ -33,3 +33,10 @@ config :ueberauth, Ueberauth,
       [callback_methods: ["POST"]]
     }
   ]
+
+config :guardian, Guardian,
+  issuer: "PhoenixChat",
+  ttl: {30, :days},
+  secret_key: "uw/27wdrIquPn2fktwfJg9tg8qOl5ysTPCFjISw1TCCaLlfWgRUAea1SuWcfERzX",
+  serializer: PhoenixChat.GuardianSerializer,
+  permissions: %{default: [:read, :write]}
