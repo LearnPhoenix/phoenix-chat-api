@@ -37,6 +37,6 @@ config :ueberauth, Ueberauth,
 config :guardian, Guardian,
   issuer: "PhoenixChat",
   ttl: {30, :days},
-  secret_key: "uw/27wdrIquPn2fktwfJg9tg8qOl5ysTPCFjISw1TCCaLlfWgRUAea1SuWcfERzX",
+  secret_key: "u8zSJLoclxh5cj/Pv2rVaiAbu1jxORtPV5Zz1CpojxlwsbJQa9fJ7VsBkGfeO5R/",
   serializer: PhoenixChat.GuardianSerializer,
   permissions: %{default: [:read, :write]}
