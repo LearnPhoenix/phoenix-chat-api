@@ -54,4 +54,16 @@ defmodule PhoenixChat.AuthController do
             |> Guardian.Plug.current_token
     {:ok, user, token}
   end
+
+  def unauthenticated(conn, _params) do
+    conn
+    |> put_status(:unauthorized)
+    |> render(ErrorView, "error.json", errors: %{"account" => ["insufficient privilege"]})
+  end
+
+  def unauthorized(conn, _params) do
+    conn
+    |> put_status(:forbidden)
+    |> render(ErrorView, "error.json", error: %{"account" => ["unauthorized"]})
+  end
 end
