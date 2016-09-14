@@ -6,15 +6,20 @@ defmodule PhoenixChat.User do
     field :encrypted_password, :string
     field :username, :string
 
-    timestamps()
+    timestamps
   end
 
-  @doc """
-  Builds a changeset based on the `struct` and `params`.
-  """
-  def changeset(struct, params \\ %{}) do
-    struct
-    |> cast(params, [:email, :encrypted_password, :username])
-    |> validate_required([:email, :encrypted_password, :username])
+  @required_fields ~w(email encrypted_password username)
+  @optional_fields ~w()
+
+  def changeset(model, params \\ :empty) do
+    model
+    |> cast(params, @required_fields, @optional_fields)
+    |> validate_format(:email, ~r/@/)
+    |> validate_length(:username, min: 1, max: 20)
+    |> update_change(:email, &String.downcase/1)
+    |> unique_constraint(:email)
+    |> update_change(:username, &String.downcase/1)
+    |> unique_constraint(:username)
   end
 end
