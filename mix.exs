@@ -41,6 +41,7 @@ defmodule PhoenixChat.Mixfile do
   defp deps do
     [
       {:comeonin, "~> 2.3"},
+      {:corsica, "~> 0.4"},
       {:cowboy, "~> 1.0"},
       {:gettext, "~> 0.11"},
       {:phoenix, "~> 1.2.0"},
