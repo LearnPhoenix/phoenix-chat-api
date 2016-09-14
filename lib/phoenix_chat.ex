@@ -6,14 +6,12 @@ defmodule PhoenixChat do
   def start(_type, _args) do
     import Supervisor.Spec
 
-    # Define workers and child supervisors to be supervised
     children = [
-      # Start the Ecto repository
-      supervisor(PhoenixChat.Repo, []),
       # Start the endpoint when the application starts
       supervisor(PhoenixChat.Endpoint, []),
-      # Start your own worker by calling: PhoenixChat.Worker.start_link(arg1, arg2, arg3)
-      # worker(PhoenixChat.Worker, [arg1, arg2, arg3]),
+      # Start the Ecto repository
+      supervisor(PhoenixChat.Repo, []),
+      supervisor(PhoenixChat.Presence, [])
     ]
 
     # See http://elixir-lang.org/docs/stable/elixir/Supervisor.html
