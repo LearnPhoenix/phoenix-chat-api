@@ -13,6 +13,11 @@ defmodule PhoenixChat.Router do
     plug :accepts, ["json"]
   end
 
+  pipeline :api_auth do
+    plug Guardian.Plug.VerifyHeader, realm: "Bearer"
+    plug Guardian.Plug.LoadResource
+  end
+
   scope "/", PhoenixChat do
     pipe_through :browser # Use the default browser stack
 
@@ -22,7 +27,12 @@ defmodule PhoenixChat.Router do
   scope "/api", PhoenixChat do
     pipe_through :api
 
-    get "/auth", AuthController, :test
-    resources "/users", UserController, except: [:new, :edit]
+    resources "/users", UserController, except: [:show, :index, :new, :edit]
+  end
+
+  scope "/auth", PhoenixChat do
+    pipe_through [:api, :api_auth]
+
+    post "/:identity/callback", AuthController, :callback
   end
 end
