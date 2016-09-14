@@ -3,7 +3,7 @@ defmodule PhoenixChat.Message do
 
   schema "messages" do
     field :body, :string
-    field :timestamp, Ecto.DateTime
+    field :timestamp, PhoenixChat.DateTime
     field :room, :string
     field :from, :string
     belongs_to :user, PhoenixChat.User
