@@ -1,6 +1,8 @@
 defmodule PhoenixChat.UserSocket do
   use Phoenix.Socket
 
+  alias PhoenixChat.{Repo, User}
+
   ## Channels
   channel "room:*", PhoenixChat.RoomChannel
   channel "admin:*", PhoenixChat.AdminChannel
@@ -21,14 +23,23 @@ defmodule PhoenixChat.UserSocket do
   # See `Phoenix.Token` documentation for examples in
   # performing token verification on connect.
   def connect(params, socket) do
-    socket = socket
-      |> assign(:user_id, params["id"])
-      |> assign(:username, params["username"])
-      |> assign(:email, params["email"])
-      |> assign(:uuid, params["uuid"])
+    user_id = params["id"]
+    user = user_id && Repo.get(User, user_id)
+
+    socket = if user do
+      socket
+        |> assign(:user_id, user_id)
+        |> assign(:username, user.username)
+        |> assign(:email, user.email)
+      else
+        socket
+          |> assign(:user_id, nil)
+          |> assign(:uuid, params["uuid"])
+      end
+
     {:ok, socket}
   end
-
+  
   # Socket id's are topics that allow you to identify all sockets for a given user:
   #
   #     def id(socket), do: "users_socket:#{socket.assigns.user_id}"
