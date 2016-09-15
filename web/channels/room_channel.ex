@@ -11,8 +11,16 @@ defmodule PhoenixChat.RoomChannel do
         |> Repo.all
         |> Enum.map(&message_payload/1)
         |> Enum.reverse
+      send(self, :after_join)
       {:ok, %{messages: messages}, socket}
     end)
+  end
+
+  def handle_info(:after_join, socket) do
+    # We create the anonymous user in our DB if its `uuid` does not match
+    # any existing record.
+    get_or_create_anonymous_user!(socket)
+    {:noreply, socket}
   end
 
   def handle_in("message", payload, socket) do
