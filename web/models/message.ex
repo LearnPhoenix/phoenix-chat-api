@@ -1,17 +1,17 @@
 defmodule PhoenixChat.Message do
   use PhoenixChat.Web, :model
 
-  alias PhoenixChat.{DateTime, User, AnonymousUser}
+  alias PhoenixChat.{DateTime}
 
   schema "messages" do
     field :body, :string
     field :timestamp, DateTime
     field :room, :string
 
-    belongs_to :user, User
+    belongs_to :user, PhoenixChat.User
     # Note that we set `:type` below. This is so Ecto is aware the type of the
     # foreign_key is not an `:integer` but a `:binary_id`.
-    belongs_to :user, AnonymousUser, type: :binary_id
+    belongs_to :anonymous_user, PhoenixChat.AnonymousUser, type: :binary_id
 
     timestamps
   end
