@@ -8,6 +8,8 @@ defmodule PhoenixChat.AdminChannel do
 
   alias PhoenixChat.{Presence, Repo, AnonymousUser}
 
+  intercept ~w(lobby_list)
+
   @doc """
   The `admin:active_users` topic is how we identify all users currently using the app.
   """
@@ -35,7 +37,11 @@ defmodule PhoenixChat.AdminChannel do
   # in our DB.
   def handle_info(:after_join, %{assigns: %{uuid: uuid}} = socket) do
     # We save anonymous user to DB when it hasn't been saved before
-    ensure_user_saved!(uuid)
+    user = ensure_user_saved!(uuid)
+
+    # Used by the frontend to update their lobby_list (chatrooms displayed
+    # on the sidebar)
+    broadcast! socket, "lobby_list", user
 
     push socket, "presence_state", Presence.list(socket)
     Logger.debug "Presence for socket: #{inspect socket}"
@@ -45,9 +51,22 @@ defmodule PhoenixChat.AdminChannel do
     {:noreply, socket}
   end
 
+  @doc """
+  Sends the lobby_list only to admins
+  """
+  def handle_out("lobby_list", payload, socket) do
+    assigns = socket.assigns
+    if assigns[:user_id] do
+      push socket, "lobby_list", payload
+    end
+    {:noreply, socket}
+  end
+
   defp ensure_user_saved!(uuid) do
     user_exists = Repo.get(AnonymousUser, uuid)
-    unless user_exists do
+    if user_exists do
+      user_exists
+    else
       changeset = AnonymousUser.changeset(%AnonymousUser{}, %{id: uuid})
       Repo.insert!(changeset)
     end
