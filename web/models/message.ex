@@ -3,6 +3,16 @@ defmodule PhoenixChat.Message do
 
   alias PhoenixChat.{DateTime}
 
+  # @derive is a module attribute for you to be able to customize how an
+  # Elixir Protocol treats a custom struct.
+  # In this case, we instruct the Poison.Encode protocol to only encode
+  # certain fields and ignore the rest.
+  # More info at:
+  # - https://github.com/devinus/poison#encoding-only-some-attributes
+  #
+  # This replaces the message_payload/1 function in RoomChannel
+  @derive {Poison.Encoder, only: ~w(id body timestamp room user_id anonymous_user_id)a}
+
   schema "messages" do
     field :body, :string
     field :timestamp, DateTime

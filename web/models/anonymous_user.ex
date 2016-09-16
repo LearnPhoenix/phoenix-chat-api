@@ -9,6 +9,7 @@ defmodule PhoenixChat.AnonymousUser do
   # We need to set `@foreign_key_type` below since it defaults to `:integer`.
   # We are using a UUID as `id` so we need to set type as `:binary_id`.
   @foreign_key_type :binary_id
+  @derive {Poison.Encoder, only: ~w(id name avatar)a}
 
   schema "anonymous_users" do
     field :name
