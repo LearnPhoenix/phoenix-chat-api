@@ -25,21 +25,23 @@ defmodule PhoenixChat.UserSocket do
   def connect(params, socket) do
     user_id = params["id"]
     user = user_id && Repo.get(User, user_id)
+    # We added this validation. More explanation below at the function def.
+    validate_params!(params)
 
     socket = if user do
-      socket
+        socket
         |> assign(:user_id, user_id)
         |> assign(:username, user.username)
         |> assign(:email, user.email)
       else
+        # No longer add `:user_id` field to socket.assigns
         socket
-          |> assign(:user_id, nil)
-          |> assign(:uuid, params["uuid"])
+        |> assign(:uuid, params["uuid"])
       end
 
     {:ok, socket}
   end
-  
+
   # Socket id's are topics that allow you to identify all sockets for a given user:
   #
   #     def id(socket), do: "users_socket:#{socket.assigns.user_id}"
@@ -51,4 +53,14 @@ defmodule PhoenixChat.UserSocket do
   #
   # Returning `nil` makes this socket anonymous.
   def id(_socket), do: nil
+
+  @empty ["", nil]
+  # We want to raise an error as early as here so our code in channels will not
+  # have to worry about empty values for id or uuid and our frontend won't be
+  # be able to connect to the socket unless they provide an id or uuid.
+  defp validate_params!(%{"id" => id, "uuid" => uuid}) when id in @empty or uuid in @empty do
+    raise "id or uuid must not be empty"
+  end
+
+  defp validate_params!(_), do: nil #noop
 end
