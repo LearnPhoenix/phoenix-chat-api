@@ -8,6 +8,8 @@ defmodule PhoenixChat.AdminChannel do
 
   alias PhoenixChat.{Presence, Repo, AnonymousUser}
 
+  intercept ~w(lobby_list)
+
   @doc """
   The `admin:active_users` topic is how we identify all users currently using the app.
   """
@@ -38,6 +40,17 @@ defmodule PhoenixChat.AdminChannel do
     {:ok, _} = Presence.track(socket, uuid, %{
       online_at: inspect(System.system_time(:seconds))
     })
+    {:noreply, socket}
+  end
+
+  @doc """
+  Sends the lobby_list only to admins
+  """
+  def handle_out("lobby_list", payload, socket) do
+    assigns = socket.assigns
+    if assigns[:user_id] do
+      push socket, "lobby_list", payload
+    end
     {:noreply, socket}
   end
 
