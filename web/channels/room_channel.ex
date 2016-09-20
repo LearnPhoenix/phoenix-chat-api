@@ -16,26 +16,16 @@ defmodule PhoenixChat.RoomChannel do
 
   def handle_in("message", payload, socket) do
     payload = payload
-      |> Map.put("user_id", socket.assigns.user_id)
-      |> Map.put("from", socket.assigns[:uuid])
+      |> Map.put("user_id", socket.assigns[:user_id])
+      |> Map.put("anonymous_user_id", socket.assigns[:uuid])
     changeset = Message.changeset(%Message{}, payload)
 
     case Repo.insert(changeset) do
       {:ok, message} ->
-        payload = message_payload(message)
-        broadcast! socket, "message", payload
+        broadcast! socket, "message", message
         {:reply, :ok, socket}
       {:error, changeset} ->
         {:reply, {:error, %{errors: changeset}}, socket}
     end
-  end
-
-  defp message_payload(message) do
-    from = message.user_id || message.from
-    %{body: message.body,
-      timestamp: message.timestamp,
-      room: message.room,
-      from: from,
-      id: message.id}
   end
 end
