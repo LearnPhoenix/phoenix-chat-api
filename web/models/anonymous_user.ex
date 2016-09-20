@@ -21,6 +21,17 @@ defmodule PhoenixChat.AnonymousUser do
     |> put_name
   end
 
+  @doc """
+  This query returns users with the most recent messages up to a given limit.
+  """
+  def recently_active_users(limit \\ 20) do
+    from u in __MODULE__,
+      left_join: m in Message, on: m.anonymous_user_id == u.id,
+      distinct: u.id,
+      order_by: [desc: u.inserted_at, desc: m.inserted_at],
+      limit: ^limit
+  end
+
   defp put_name(changeset) do
     adjective = Faker.Color.name |> String.capitalize
     noun = Faker.Company.buzzword_suffix |> String.capitalize
