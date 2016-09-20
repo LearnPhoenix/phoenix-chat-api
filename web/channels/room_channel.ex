@@ -9,7 +9,6 @@ defmodule PhoenixChat.RoomChannel do
       messages = room_id
         |> Message.latest_room_messages
         |> Repo.all
-        |> Enum.map(&message_payload/1)
         |> Enum.reverse
       {:ok, %{messages: messages}, socket}
     end)
