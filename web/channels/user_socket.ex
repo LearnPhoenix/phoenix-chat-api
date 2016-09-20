@@ -51,4 +51,12 @@ defmodule PhoenixChat.UserSocket do
   #
   # Returning `nil` makes this socket anonymous.
   def id(_socket), do: nil
+
+  @empty ["", nil]
+  defp validate_params!(%{"id" => id, "uuid" => uuid})
+  when id in @empty or uuid in @empty do
+    raise "id or uuid must not be empty"
+  end
+
+  defp validate_params!(_), do: nil
 end
