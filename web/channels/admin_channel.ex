@@ -29,7 +29,9 @@ defmodule PhoenixChat.AdminChannel do
   end
 
   def handle_info(:after_join, %{assigns: %{uuid: uuid}} = socket) do
-    ensure_user_saved!(uuid)
+    user = ensure_user_saved!(uuid)
+
+    broadcast! socket, "lobby_list", user
 
     push socket, "presence_state", Presence.list(socket)
     Logger.debug "Presence for socket: #{inspect socket}"
@@ -41,7 +43,9 @@ defmodule PhoenixChat.AdminChannel do
 
   defp ensure_user_saved!(uuid) do
     user_exists = Repo.get(AnonymousUser, uuid)
-    unless user_exists do
+    if user_exists do
+      user_exists
+    else
       changeset = AnonymousUser.changeset(%AnonymousUser{}, %{id: uuid})
       Repo.insert!(changeset)
     end
