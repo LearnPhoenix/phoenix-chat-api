@@ -15,7 +15,8 @@ defmodule PhoenixChat.AdminChannel do
     authorize(payload, fn ->
       send(self, :after_join)
       id = socket.assigns[:uuid] || socket.assigns[:user_id]
-      {:ok, %{id: id}, socket}
+      lobby_list = AnonymousUser.recently_active_users |> Repo.all
+      {:ok, %{id: id, lobby_list: lobby_list}, socket}
     end)
   end
 
