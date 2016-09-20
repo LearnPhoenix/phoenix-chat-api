@@ -5,6 +5,7 @@ defmodule PhoenixChat.AnonymousUser do
 
   @primary_key {:id, :binary_id, autogenerate: false}
   @foreign_key_type :binary_id
+  @derive {Poison.Encoder, only: ~w(id name avatar)a}
 
   schema "anonymous_users" do
     field :name
