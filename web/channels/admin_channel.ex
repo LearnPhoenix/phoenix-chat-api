@@ -20,13 +20,19 @@ defmodule PhoenixChat.AdminChannel do
   end
 
   @doc """
-  This handles the `:after_join` event and tracks the presence of the socket that has subscribed to the `admin:active_users` topic.
+  This handles the `:after_join` event and tracks the presence of the socket that
+  has subscribed to the `admin:active_users` topic.
   """
-  def handle_info(:after_join, socket) do
+  def handle_info(:after_join, %{assigns: %{user_id: _user_id}} = socket) do
+    {:noreply, socket}
+  end
+
+  def handle_info(:after_join, %{assigns: %{uuid: uuid}} = socket) do
+    ensure_user_saved!(uuid)
+
     push socket, "presence_state", Presence.list(socket)
     Logger.debug "Presence for socket: #{inspect socket}"
-    id = socket.assigns.user_id || socket.assigns.uuid
-    {:ok, _} = Presence.track(socket, id, %{
+    {:ok, _} = Presence.track(socket, uuid, %{
       online_at: inspect(System.system_time(:seconds))
     })
     {:noreply, socket}
