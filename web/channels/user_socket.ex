@@ -25,21 +25,21 @@ defmodule PhoenixChat.UserSocket do
   def connect(params, socket) do
     user_id = params["id"]
     user = user_id && Repo.get(User, user_id)
+    validate_params!(params)
 
     socket = if user do
-      socket
+        socket
         |> assign(:user_id, user_id)
         |> assign(:username, user.username)
         |> assign(:email, user.email)
       else
         socket
-          |> assign(:user_id, nil)
-          |> assign(:uuid, params["uuid"])
+        |> assign(:uuid, params["uuid"])
       end
 
     {:ok, socket}
   end
-  
+
   # Socket id's are topics that allow you to identify all sockets for a given user:
   #
   #     def id(socket), do: "users_socket:#{socket.assigns.user_id}"
