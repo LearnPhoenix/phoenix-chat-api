@@ -37,4 +37,12 @@ defmodule PhoenixChat.AdminChannel do
     })
     {:noreply, socket}
   end
+
+  defp ensure_user_saved!(uuid) do
+    user_exists = Repo.get(AnonymousUser, uuid)
+    unless user_exists do
+      changeset = AnonymousUser.changeset(%AnonymousUser{}, %{id: uuid})
+      Repo.insert!(changeset)
+    end
+  end
 end
