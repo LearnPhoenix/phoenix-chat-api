@@ -30,6 +30,7 @@ defmodule PhoenixChat.AdminChannel do
   # We no longer track admin's presence. This will lead to simpler code in the
   # frontend by not having to filter out admin from the list of users in the Sidebar.
   def handle_info(:after_join, %{assigns: %{user_id: _user_id}} = socket) do
+    push socket, "presence_state", Presence.list(socket)
     {:noreply, socket}
   end
 
